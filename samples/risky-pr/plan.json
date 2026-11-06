@@ -1,0 +1,538 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.8",
+  "planned_values": {
+    "root_module": {
+      "resources": []
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "azurerm_resource_group.app",
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod",
+          "tags": null
+        },
+        "after": {
+          "name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod",
+          "tags": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_network_security_group.web",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "nsg-portal-web",
+          "location": "germanywestcentral",
+          "resource_group_name": "rg-portal-prod",
+          "security_rule": [
+            {
+              "name": "allow-https",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "description": "",
+              "source_port_range": "*",
+              "source_port_ranges": [],
+              "destination_port_range": "443",
+              "destination_port_ranges": [],
+              "source_address_prefix": "Internet",
+              "source_address_prefixes": [],
+              "destination_address_prefix": "*",
+              "destination_address_prefixes": [],
+              "source_application_security_group_ids": [],
+              "destination_application_security_group_ids": []
+            }
+          ],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Network/networkSecurityGroups/nsg-portal-web"
+        },
+        "after": {
+          "name": "nsg-portal-web",
+          "location": "germanywestcentral",
+          "resource_group_name": "rg-portal-prod",
+          "security_rule": [
+            {
+              "name": "allow-https",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "description": "",
+              "source_port_range": "*",
+              "source_port_ranges": [],
+              "destination_port_range": "443",
+              "destination_port_ranges": [],
+              "source_address_prefix": "Internet",
+              "source_address_prefixes": [],
+              "destination_address_prefix": "*",
+              "destination_address_prefixes": [],
+              "source_application_security_group_ids": [],
+              "destination_application_security_group_ids": []
+            },
+            {
+              "name": "allow-rdp-migration",
+              "priority": 200,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "description": "",
+              "source_port_range": "*",
+              "source_port_ranges": [],
+              "destination_port_range": "3389",
+              "destination_port_ranges": [],
+              "source_address_prefix": "*",
+              "source_address_prefixes": [],
+              "destination_address_prefix": "*",
+              "destination_address_prefixes": [],
+              "source_application_security_group_ids": [],
+              "destination_application_security_group_ids": []
+            }
+          ],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Network/networkSecurityGroups/nsg-portal-web"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.exports",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "exports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "stportalexports",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "account_kind": "StorageV2",
+          "account_tier": "Standard",
+          "account_replication_type": "GRS",
+          "access_tier": "Hot",
+          "allow_nested_items_to_be_public": true,
+          "https_traffic_only_enabled": true,
+          "min_tls_version": "TLS1_0",
+          "public_network_access_enabled": true,
+          "shared_access_key_enabled": true,
+          "infrastructure_encryption_enabled": false,
+          "network_rules": [],
+          "tags": null
+        },
+        "after_unknown": {
+          "id": true,
+          "primary_access_key": true,
+          "primary_blob_endpoint": true,
+          "network_rules": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "primary_access_key": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_storage_container.exports",
+      "mode": "managed",
+      "type": "azurerm_storage_container",
+      "name": "exports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "partner-exports",
+          "container_access_type": "blob",
+          "metadata": null
+        },
+        "after_unknown": {
+          "id": true,
+          "storage_account_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_linux_web_app.portal",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "portal",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "app-partner-portal",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "service_plan_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Web/serverFarms/asp-portal",
+          "https_only": false,
+          "enabled": true,
+          "client_certificate_enabled": false,
+          "public_network_access_enabled": true,
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "AllAllowed",
+              "http2_enabled": false,
+              "minimum_tls_version": "1.2",
+              "scm_minimum_tls_version": "1.2",
+              "remote_debugging_enabled": false
+            }
+          ],
+          "app_settings": {
+            "ASPNETCORE_ENVIRONMENT": "Production",
+            "Db__Password": "Winter2026!",
+            "Storage__ConnectionString": "@Microsoft.KeyVault(SecretUri=https://kv-portal-prod.vault.azure.net/secrets/storage-cs/)"
+          },
+          "connection_string": []
+        },
+        "after_unknown": {
+          "id": true,
+          "default_hostname": true,
+          "outbound_ip_addresses": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "app_settings": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_mssql_server.main",
+      "mode": "managed",
+      "type": "azurerm_mssql_server",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "name": "sql-portal-prod",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "version": "12.0",
+          "administrator_login": "sqladmin",
+          "administrator_login_password": "from-a-variable",
+          "minimum_tls_version": "1.2",
+          "public_network_access_enabled": true,
+          "outbound_network_restriction_enabled": false,
+          "azuread_administrator": [],
+          "identity": [],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Sql/servers/sql-portal-prod",
+          "fully_qualified_domain_name": "sql-portal-prod.database.windows.net"
+        },
+        "after": {
+          "name": "sql-portal-prod",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "version": "12.0",
+          "administrator_login": "sqladmin",
+          "administrator_login_password": "from-a-variable",
+          "minimum_tls_version": "1.2",
+          "public_network_access_enabled": true,
+          "outbound_network_restriction_enabled": false,
+          "azuread_administrator": [],
+          "identity": [],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Sql/servers/sql-portal-prod",
+          "fully_qualified_domain_name": "sql-portal-prod.database.windows.net"
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "administrator_login_password": true
+        },
+        "after_sensitive": {
+          "administrator_login_password": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_mssql_firewall_rule.partner",
+      "mode": "managed",
+      "type": "azurerm_mssql_firewall_rule",
+      "name": "partner",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "partner-test",
+          "server_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Sql/servers/sql-portal-prod",
+          "start_ip_address": "203.0.113.10",
+          "end_ip_address": "203.0.113.10"
+        },
+        "after": {
+          "name": "partner-test",
+          "server_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.Sql/servers/sql-portal-prod",
+          "start_ip_address": "0.0.0.0",
+          "end_ip_address": "255.255.255.255"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_key_vault.main",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "kv-portal-prod",
+          "location": "germanywestcentral",
+          "resource_group_name": "rg-portal-prod",
+          "sku_name": "standard",
+          "tenant_id": "11111111-1111-1111-1111-111111111111",
+          "enabled_for_deployment": false,
+          "enable_rbac_authorization": true,
+          "purge_protection_enabled": false,
+          "soft_delete_retention_days": 90,
+          "public_network_access_enabled": true,
+          "network_acls": [],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.KeyVault/vaults/kv-portal-prod",
+          "vault_uri": "https://kv-portal-prod.vault.azure.net/"
+        },
+        "after": {
+          "name": "kv-portal-prod",
+          "location": "germanywestcentral",
+          "resource_group_name": "rg-portal-prod",
+          "sku_name": "standard",
+          "tenant_id": "11111111-1111-1111-1111-111111111111",
+          "enabled_for_deployment": false,
+          "enable_rbac_authorization": true,
+          "purge_protection_enabled": true,
+          "soft_delete_retention_days": 90,
+          "public_network_access_enabled": true,
+          "network_acls": [
+            {
+              "default_action": "Deny",
+              "bypass": "AzureServices",
+              "ip_rules": [],
+              "virtual_network_subnet_ids": []
+            }
+          ],
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.KeyVault/vaults/kv-portal-prod",
+          "vault_uri": "https://kv-portal-prod.vault.azure.net/"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.kv",
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "kv",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "name": "kv-audit",
+          "target_resource_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.KeyVault/vaults/kv-portal-prod",
+          "log_analytics_workspace_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.OperationalInsights/workspaces/log-portal"
+        },
+        "after": {
+          "name": "kv-audit",
+          "target_resource_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.KeyVault/vaults/kv-portal-prod",
+          "log_analytics_workspace_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.OperationalInsights/workspaces/log-portal"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_key_vault_secret.partner_api",
+      "mode": "managed",
+      "type": "azurerm_key_vault_secret",
+      "name": "partner_api",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "partner-api-key",
+          "value": "not-a-real-key-0123456789",
+          "key_vault_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-portal-prod/providers/Microsoft.KeyVault/vaults/kv-portal-prod",
+          "content_type": null
+        },
+        "after_unknown": {
+          "id": true,
+          "version": true,
+          "versionless_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "value": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.pipeline",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "pipeline",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/00000000-0000-0000-0000-000000000000",
+          "role_definition_name": "Contributor",
+          "principal_id": "22222222-2222-2222-2222-222222222222",
+          "principal_type": "ServicePrincipal"
+        },
+        "after_unknown": {
+          "id": true,
+          "name": true,
+          "role_definition_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "azurerm": {
+        "name": "azurerm",
+        "full_name": "registry.terraform.io/hashicorp/azurerm",
+        "version_constraint": "~> 4.0"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "azurerm_mssql_server.main",
+          "mode": "managed",
+          "type": "azurerm_mssql_server",
+          "name": "main",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "administrator_login_password": {
+              "references": [
+                "var.sql_admin_password"
+              ]
+            },
+            "name": {
+              "constant_value": "sql-portal-prod"
+            }
+          }
+        },
+        {
+          "address": "azurerm_monitor_diagnostic_setting.kv",
+          "mode": "managed",
+          "type": "azurerm_monitor_diagnostic_setting",
+          "name": "kv",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "target_resource_id": {
+              "references": [
+                "azurerm_key_vault.main.id",
+                "azurerm_key_vault.main"
+              ]
+            }
+          }
+        },
+        {
+          "address": "azurerm_key_vault_secret.partner_api",
+          "mode": "managed",
+          "type": "azurerm_key_vault_secret",
+          "name": "partner_api",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "value": {
+              "constant_value": "not-a-real-key-0123456789"
+            },
+            "key_vault_id": {
+              "references": [
+                "azurerm_key_vault.main.id",
+                "azurerm_key_vault.main"
+              ]
+            }
+          }
+        },
+        {
+          "address": "azurerm_role_assignment.pipeline",
+          "mode": "managed",
+          "type": "azurerm_role_assignment",
+          "name": "pipeline",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "scope": {
+              "references": [
+                "data.azurerm_subscription.current.id",
+                "data.azurerm_subscription.current"
+              ]
+            },
+            "role_definition_name": {
+              "constant_value": "Contributor"
+            }
+          }
+        },
+        {
+          "address": "azurerm_storage_container.exports",
+          "mode": "managed",
+          "type": "azurerm_storage_container",
+          "name": "exports",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "storage_account_id": {
+              "references": [
+                "azurerm_storage_account.exports.id",
+                "azurerm_storage_account.exports"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

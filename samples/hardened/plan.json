@@ -1,0 +1,257 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.8",
+  "planned_values": {
+    "root_module": {
+      "resources": []
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "azurerm_resource_group.app",
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "tags": null
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.exports",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "exports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "stportalexports",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "account_kind": "StorageV2",
+          "account_tier": "Standard",
+          "account_replication_type": "GRS",
+          "access_tier": "Hot",
+          "allow_nested_items_to_be_public": false,
+          "https_traffic_only_enabled": true,
+          "min_tls_version": "TLS1_2",
+          "public_network_access_enabled": true,
+          "shared_access_key_enabled": false,
+          "infrastructure_encryption_enabled": false,
+          "network_rules": [
+            {
+              "default_action": "Deny",
+              "bypass": [
+                "AzureServices"
+              ],
+              "ip_rules": [],
+              "virtual_network_subnet_ids": []
+            }
+          ],
+          "tags": null
+        },
+        "after_unknown": {
+          "id": true,
+          "primary_blob_endpoint": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_linux_web_app.portal",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "portal",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "app-partner-portal",
+          "resource_group_name": "rg-portal-prod",
+          "location": "germanywestcentral",
+          "https_only": true,
+          "enabled": true,
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "Disabled",
+              "http2_enabled": true,
+              "minimum_tls_version": "1.2",
+              "scm_minimum_tls_version": "1.2",
+              "remote_debugging_enabled": false
+            }
+          ],
+          "app_settings": {
+            "Db__Password": "@Microsoft.KeyVault(SecretUri=https://kv-portal-prod.vault.azure.net/secrets/db-password/)"
+          },
+          "connection_string": []
+        },
+        "after_unknown": {
+          "id": true,
+          "service_plan_id": true,
+          "default_hostname": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "app_settings": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_key_vault.main",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "kv-portal-prod",
+          "location": "germanywestcentral",
+          "resource_group_name": "rg-portal-prod",
+          "sku_name": "standard",
+          "tenant_id": "11111111-1111-1111-1111-111111111111",
+          "enabled_for_deployment": false,
+          "enable_rbac_authorization": true,
+          "purge_protection_enabled": true,
+          "soft_delete_retention_days": 90,
+          "public_network_access_enabled": true,
+          "network_acls": [
+            {
+              "default_action": "Deny",
+              "bypass": "AzureServices",
+              "ip_rules": [],
+              "virtual_network_subnet_ids": []
+            }
+          ],
+          "id": null,
+          "vault_uri": null
+        },
+        "after_unknown": {
+          "id": true,
+          "vault_uri": true,
+          "tenant_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.kv",
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "kv",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "kv-audit",
+          "target_resource_id": null
+        },
+        "after_unknown": {
+          "id": true,
+          "target_resource_id": true,
+          "log_analytics_workspace_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.pipeline",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "pipeline",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "scope": null,
+          "role_definition_name": "Storage Blob Data Contributor",
+          "principal_id": "22222222-2222-2222-2222-222222222222",
+          "principal_type": "ServicePrincipal"
+        },
+        "after_unknown": {
+          "id": true,
+          "scope": true,
+          "role_definition_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "azurerm": {
+        "name": "azurerm",
+        "full_name": "registry.terraform.io/hashicorp/azurerm",
+        "version_constraint": "~> 4.0"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "azurerm_monitor_diagnostic_setting.kv",
+          "mode": "managed",
+          "type": "azurerm_monitor_diagnostic_setting",
+          "name": "kv",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "target_resource_id": {
+              "references": [
+                "azurerm_key_vault.main.id",
+                "azurerm_key_vault.main"
+              ]
+            }
+          }
+        },
+        {
+          "address": "azurerm_role_assignment.pipeline",
+          "mode": "managed",
+          "type": "azurerm_role_assignment",
+          "name": "pipeline",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "scope": {
+              "references": [
+                "azurerm_storage_account.exports.id",
+                "azurerm_storage_account.exports"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

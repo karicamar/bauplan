@@ -1,0 +1,72 @@
+name: Bauplan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly: check the rules against the newest azurerm provider
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet restore
+      - run: dotnet build --no-restore -c Release -warnaserror
+      - run: dotnet test --no-build -c Release
+      - run: dotnet pack src/Bauplan.Cli -c Release --no-build -o nupkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bauplan-nupkg
+          path: nupkg/*.nupkg
+
+  # The samples are real Terraform: they must validate against the azurerm provider, and every attribute
+  # the rules read must exist in the provider's schema (catches renames between provider versions).
+  provider-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      - name: terraform validate (all samples)
+        run: |
+          for s in samples/*/; do
+            echo "== $s"
+            terraform -chdir="$s" init -backend=false -input=false -no-color > /dev/null
+            terraform -chdir="$s" validate -no-color
+          done
+      - name: Rule attributes exist in the azurerm schema
+        run: |
+          terraform -chdir=samples/risky-pr providers schema -json > schema.json
+          node tools/check-provider-schema.mjs schema.json
+
+  # What a review looks like: the risky pull request and the rename fail, the hardened plan passes.
+  demo:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet build src/Bauplan.Cli -c Release
+      - name: Risky pull request (expected to fail)
+        run: |
+          set +e
+          dotnet run --project src/Bauplan.Cli -c Release --no-build -- samples/risky-pr/plan.json --new-only
+          test $? -eq 1
+      - name: Rename that destroys the database (expected to fail)
+        run: |
+          set +e
+          dotnet run --project src/Bauplan.Cli -c Release --no-build -- samples/rename-database/plan.json
+          test $? -eq 1
+      - name: Hardened configuration (expected to pass)
+        run: dotnet run --project src/Bauplan.Cli -c Release --no-build -- samples/hardened/plan.json --fail-on low

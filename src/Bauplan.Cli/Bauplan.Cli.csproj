@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>bauplan</AssemblyName>
+    <RootNamespace>Bauplan.Cli</RootNamespace>
+
+    <!-- Installable with: dotnet tool install -g Bauplan -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>bauplan</ToolCommandName>
+    <PackageId>Bauplan</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Amar Karic</Authors>
+    <Description>Security review of Terraform plans for Azure: misconfigurations (network exposure, TLS, public storage, secrets, privileged roles), what a change introduces versus what was there, and deletes or replacements that lose data. Console, Markdown for pull requests, JSON and SARIF.</Description>
+    <PackageTags>terraform;azure;azurerm;iac;security;devsecops;sarif;cloud-security</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/karicamar/bauplan</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bauplan.Core\Bauplan.Core.csproj" />
+  </ItemGroup>
+
+</Project>

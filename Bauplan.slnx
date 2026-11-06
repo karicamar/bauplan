@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Bauplan.Cli/Bauplan.Cli.csproj" />
+    <Project Path="src/Bauplan.Core/Bauplan.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Bauplan.Tests/Bauplan.Tests.csproj" />
+  </Folder>
+</Solution>

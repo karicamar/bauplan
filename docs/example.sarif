@@ -1,0 +1,616 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Bauplan",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/karicamar/bauplan",
+          "rules": [
+            {
+              "id": "AZ-NET-001",
+              "shortDescription": {
+                "text": "Management or database port open to the Internet"
+              },
+              "help": {
+                "text": "SSH, RDP, WinRM and database ports reachable from any address are found by Internet-wide scanners within minutes and are a top initial access vector (brute force, exploits). Fix: Restrict source_address_prefix to known ranges, or remove the rule and use Azure Bastion, a VPN or Just-in-Time VM access."
+              },
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ]
+              }
+            },
+            {
+              "id": "AZ-NET-002",
+              "shortDescription": {
+                "text": "Database firewall allows a huge address range"
+              },
+              "help": {
+                "text": "A firewall rule from 0.0.0.0 to 255.255.255.255 puts the database on the open Internet, protected by a password only. The special rule 0.0.0.0-0.0.0.0 (\"Allow Azure services\") opens it to every Azure customer, not just your own resources. Fix: Use a private endpoint or VNet integration; otherwise allow only the exact outbound IPs of your applications."
+              },
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ]
+              }
+            },
+            {
+              "id": "AZ-STG-001",
+              "shortDescription": {
+                "text": "Storage account allows anonymous public blob access"
+              },
+              "help": {
+                "text": "With nested items allowed to be public, a single container set to 'blob' or 'container' access exposes its files to anyone with the URL, without any credential. Many cloud data leaks started this way. Fix: Set allow_nested_items_to_be_public = false (azurerm 3.x defaults to true). Serve public files through a CDN or SAS tokens instead."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "data-protection"
+                ]
+              }
+            },
+            {
+              "id": "AZ-STG-002",
+              "shortDescription": {
+                "text": "Storage account reachable from all networks"
+              },
+              "help": {
+                "text": "Without network rules a stolen access key or SAS token works from anywhere on the Internet. Fix: Add network_rules { default_action = \"Deny\" } with your VNets/IPs, or set public_network_access_enabled = false and use a private endpoint."
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ]
+              }
+            },
+            {
+              "id": "AZ-STG-003",
+              "shortDescription": {
+                "text": "Storage account accepts shared access keys"
+              },
+              "help": {
+                "text": "Account keys are full-access passwords that do not expire and cannot be scoped; every SAS token is derived from them. Entra ID authentication with RBAC can be audited and revoked per identity. Fix: Set shared_access_key_enabled = false and use managed identities with roles like Storage Blob Data Reader."
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "identity"
+                ]
+              }
+            },
+            {
+              "id": "AZ-TLS-001",
+              "shortDescription": {
+                "text": "TLS 1.0 or 1.1 allowed"
+              },
+              "help": {
+                "text": "TLS 1.0 and 1.1 are deprecated (RFC 8996) and fail PCI DSS and BSI TR-02102-2 requirements. Azure is retiring them for its own services. Fix: Set the minimum TLS version to 1.2 (TLS1_2 for storage accounts)."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "encryption"
+                ]
+              }
+            },
+            {
+              "id": "AZ-TLS-002",
+              "shortDescription": {
+                "text": "Unencrypted HTTP or non-TLS port enabled"
+              },
+              "help": {
+                "text": "Plain HTTP exposes session cookies, tokens and form data to anyone on the network path and allows content injection. Fix: App Service: https_only = true (the provider default is false). Storage: https_traffic_only_enabled = true. Redis: disable the non-SSL port."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "encryption"
+                ]
+              }
+            },
+            {
+              "id": "AZ-APP-001",
+              "shortDescription": {
+                "text": "App Service: FTP or remote debugging enabled"
+              },
+              "help": {
+                "text": "Plain FTP sends deployment credentials unencrypted; remote debugging opens extra ports into the running app. Neither belongs in production. Fix: site_config { ftps_state = \"Disabled\" (or \"FtpsOnly\"), remote_debugging_enabled = false }"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ]
+              }
+            },
+            {
+              "id": "AZ-SEC-001",
+              "shortDescription": {
+                "text": "Secret stored as plain app setting"
+              },
+              "help": {
+                "text": "App settings are readable by everyone with Reader-plus rights on the app (and in the Terraform state). A Key Vault reference keeps the secret in the vault, with access logs and rotation. Fix: Store the secret in Key Vault and set the setting to @Microsoft.KeyVault(SecretUri=...), or use a managed identity so no secret is needed."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "secrets"
+                ]
+              }
+            },
+            {
+              "id": "AZ-SEC-002",
+              "shortDescription": {
+                "text": "Password or secret hard-coded in Terraform"
+              },
+              "help": {
+                "text": "A literal secret in .tf code is in the Git history forever, visible to everyone with repository access. Fix: Generate it (random_password), pass it in as a sensitive variable from the pipeline's secret store, or use Entra ID authentication instead of a password."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "secrets"
+                ]
+              }
+            },
+            {
+              "id": "AZ-SQL-001",
+              "shortDescription": {
+                "text": "SQL Server without Entra ID administrator"
+              },
+              "help": {
+                "text": "With only SQL logins there is one shared admin password, no MFA, and no central offboarding when someone leaves. Fix: Add azuread_administrator { login_username, object_id, azuread_authentication_only = true } and use managed identities for applications."
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "identity"
+                ]
+              }
+            },
+            {
+              "id": "AZ-SQL-002",
+              "shortDescription": {
+                "text": "Database server with public network access"
+              },
+              "help": {
+                "text": "A public endpoint makes the firewall rules the only network barrier. Private endpoints keep database traffic inside your network. Fix: public_network_access_enabled = false and a private endpoint (or VNet integration for flexible servers)."
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ]
+              }
+            },
+            {
+              "id": "AZ-IAM-001",
+              "shortDescription": {
+                "text": "Privileged role assigned at subscription or management group scope"
+              },
+              "help": {
+                "text": "Owner or Contributor on a whole subscription is far more than any application or pipeline needs; a leaked credential of that identity controls everything in it. Standing privileged access should go through PIM. Fix: Assign the narrowest built-in role (e.g. Storage Blob Data Contributor) at resource group or resource scope; for people, use PIM eligible assignments."
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "identity"
+                ]
+              }
+            },
+            {
+              "id": "AZ-LOG-001",
+              "shortDescription": {
+                "text": "No audit logging configured"
+              },
+              "help": {
+                "text": "Without diagnostic settings there is no record of who read a secret or queried the database: an incident cannot be investigated (and DORA Art. 10 and the BAIT expect exactly that). Fix: Add azurerm_monitor_diagnostic_setting with target_resource_id = this resource, sending the audit categories to Log Analytics (for SQL also azurerm_mssql_server_extended_auditing_policy)."
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "logging"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "AZ-NET-002",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "azurerm_mssql_firewall_rule.partner: allows 0.0.0.0-255.255.255.255 (all 4.3 billion addresses) (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 86
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_mssql_firewall_rule.partner|AZ-NET-002|start_ip_address"
+          }
+        },
+        {
+          "ruleId": "AZ-NET-001",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "azurerm_network_security_group.web: rule 'allow-rdp-migration' allows RDP 3389 from the Internet (*) (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_network_security_group.web|AZ-NET-001|security_rule.source_address_prefix"
+          }
+        },
+        {
+          "ruleId": "AZ-SEC-002",
+          "ruleIndex": 9,
+          "level": "error",
+          "message": {
+            "text": "azurerm_key_vault_secret.partner_api: value is a literal in the code (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 120
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_key_vault_secret.partner_api|AZ-SEC-002|value"
+          }
+        },
+        {
+          "ruleId": "AZ-TLS-002",
+          "ruleIndex": 6,
+          "level": "error",
+          "message": {
+            "text": "azurerm_linux_web_app.portal: https_only is false (or not set): the app answers on plain HTTP (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_linux_web_app.portal|AZ-TLS-002|https_only"
+          }
+        },
+        {
+          "ruleId": "AZ-SEC-001",
+          "ruleIndex": 8,
+          "level": "error",
+          "message": {
+            "text": "azurerm_linux_web_app.portal: app_settings.Db__Password holds a literal value (11 characters), not a Key Vault reference (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_linux_web_app.portal|AZ-SEC-001|app_settings.Db__Password"
+          }
+        },
+        {
+          "ruleId": "AZ-IAM-001",
+          "ruleIndex": 12,
+          "level": "error",
+          "message": {
+            "text": "azurerm_role_assignment.pipeline: 'Contributor' to a ServicePrincipal at subscription scope (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 127
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_role_assignment.pipeline|AZ-IAM-001|scope"
+          }
+        },
+        {
+          "ruleId": "AZ-STG-001",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "azurerm_storage_account.exports: allow_nested_items_to_be_public is true (or not set): containers can be made public (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_storage_account.exports|AZ-STG-001|allow_nested_items_to_be_public"
+          }
+        },
+        {
+          "ruleId": "AZ-TLS-001",
+          "ruleIndex": 5,
+          "level": "error",
+          "message": {
+            "text": "azurerm_storage_account.exports: min_tls_version = \"TLS1_0\" (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_storage_account.exports|AZ-TLS-001|min_tls_version"
+          }
+        },
+        {
+          "ruleId": "AZ-STG-001",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "azurerm_storage_container.exports: container_access_type = \"blob\": files can be read anonymously (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 52
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_storage_container.exports|AZ-STG-001|container_access_type"
+          }
+        },
+        {
+          "ruleId": "AZ-APP-001",
+          "ruleIndex": 7,
+          "level": "warning",
+          "message": {
+            "text": "azurerm_linux_web_app.portal: site_config.ftps_state = \"AllAllowed\": FTP without TLS (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_linux_web_app.portal|AZ-APP-001|site_config.ftps_state"
+          }
+        },
+        {
+          "ruleId": "AZ-STG-002",
+          "ruleIndex": 3,
+          "level": "warning",
+          "message": {
+            "text": "azurerm_storage_account.exports: public network access with no network_rules (default_action is Allow) (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_storage_account.exports|AZ-STG-002|network_rules"
+          }
+        },
+        {
+          "ruleId": "AZ-STG-003",
+          "ruleIndex": 4,
+          "level": "note",
+          "message": {
+            "text": "azurerm_storage_account.exports: shared_access_key_enabled is true (or not set) (new in this plan)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_storage_account.exports|AZ-STG-003|shared_access_key_enabled"
+          }
+        },
+        {
+          "ruleId": "AZ-SQL-001",
+          "ruleIndex": 10,
+          "level": "warning",
+          "message": {
+            "text": "azurerm_mssql_server.main: no azuread_administrator block: SQL authentication only (existing)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 76
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_mssql_server.main|AZ-SQL-001|azuread_administrator"
+          }
+        },
+        {
+          "ruleId": "AZ-SQL-002",
+          "ruleIndex": 11,
+          "level": "warning",
+          "message": {
+            "text": "azurerm_mssql_server.main: public_network_access_enabled is true (existing)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 76
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_mssql_server.main|AZ-SQL-002|public_network_access_enabled"
+          }
+        },
+        {
+          "ruleId": "AZ-LOG-001",
+          "ruleIndex": 13,
+          "level": "note",
+          "message": {
+            "text": "azurerm_mssql_server.main: no azurerm_monitor_diagnostic_setting targets this resource (existing)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "samples/risky-pr/main.tf"
+                },
+                "region": {
+                  "startLine": 76
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "resourceRule/v1": "azurerm_mssql_server.main|AZ-LOG-001|target_resource_id"
+          }
+        }
+      ]
+    }
+  ]
+}
